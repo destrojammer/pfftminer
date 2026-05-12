@@ -1,0 +1,52 @@
+[package]
+name    = "pfft-miner"
+version = "0.2.0"
+edition = "2021"
+
+[[bin]]
+name = "pfft-miner"
+path = "src/main.rs"
+
+# ── Runtime ──────────────────────────────────────────────────────
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+anyhow = "1"
+
+# ── Ethereum ─────────────────────────────────────────────────────
+alloy = { version = "0.9", features = [
+    "full",
+    "provider-http",
+    "signer-local",
+    "sol-types",
+    "contract",
+] }
+
+# ── PoW / Hashing ────────────────────────────────────────────────
+tiny-keccak = { version = "2.0", features = ["keccak"] }
+rayon        = "1.10"
+num_cpus     = "1.16"
+
+# ── Wallet / Config ──────────────────────────────────────────────
+serde       = { version = "1", features = ["derive"] }
+serde_json  = "1"
+hex         = "0.4"
+rand        = "0.8"
+clap        = { version = "4", features = ["derive", "env"] }
+dotenvy     = "0.15"
+chrono      = "0.4"
+ctrlc       = "3"
+
+# ── GPU (optional) ───────────────────────────────────────────────
+[dependencies.opencl3]
+version  = "0.9"
+optional = true
+
+[features]
+default = []
+gpu     = ["opencl3"]
+
+[profile.release]
+opt-level     = 3
+lto           = true
+codegen-units = 1
+panic         = "abort"
